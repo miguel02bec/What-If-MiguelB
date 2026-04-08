@@ -175,6 +175,7 @@ has_change = any(
 with right:
     st.subheader("Valor de mercado predicho")
     st.metric(
+        label="",
         value=fmt(new_pred["eur"]),
         delta=(
             f"{'+' if delta_eur >= 0 else ''}"
