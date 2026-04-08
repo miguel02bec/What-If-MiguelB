@@ -18,7 +18,7 @@ DATA_DIR   = BASE_DIR / "data"
 MODELS_DIR = BASE_DIR / "models"
 
 st.set_page_config(
-    page_title="SoccerSolver — What-If Miguel Becerra",
+    page_title="SoccerSolver — What-If",
     page_icon="⚽",
     layout="wide",
 )
@@ -85,7 +85,7 @@ def fmt(v: float) -> str:
 
 # ── Sidebar ───────────────────────────────────────────────────────────────────
 st.sidebar.title("⚽ SoccerSolver")
-st.sidebar.caption("Simulador What-If · FIFA 24 · Big Five")
+st.sidebar.caption("Simulador What-If · Miguel Becerra")
 
 search = st.sidebar.text_input("Buscar jugador", placeholder="Mbappé, Haaland...")
 
