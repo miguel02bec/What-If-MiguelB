@@ -1,0 +1,13 @@
+{
+  "total_sofifa": 3467,
+  "matched": 2742,
+  "match_rate_pct": 79.1,
+  "unmatched": 725,
+  "high_confidence_matches": 1630,
+  "tm_history_records": 55109,
+  "known_issues": [
+    "SoFIFA usa nombres legales completos, TM usa nombres comerciales",
+    "Jugadores con un solo nombre (Vinicius, Casemiro) tienen score bajo",
+    "Jugadores transferidos entre temporadas pueden no matchear por club"
+  ]
+}

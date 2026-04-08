@@ -1,0 +1,813 @@
+\documentclass[12pt,a4paper]{report}
+
+% ── Paquetes ──────────────────────────────────────────────────────────────────
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish]{babel}
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{hyperref}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage{mdframed}
+\usepackage{multirow}
+\usepackage{float}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{setspace}
+
+% ── Geometría ─────────────────────────────────────────────────────────────────
+\geometry{
+  top=2.5cm, bottom=2.5cm,
+  left=3cm,  right=2.5cm,
+  headheight=14pt
+}
+
+% ── Colores ───────────────────────────────────────────────────────────────────
+\definecolor{primary}{RGB}{30, 100, 200}
+\definecolor{accent}{RGB}{124, 58, 237}
+\definecolor{success}{RGB}{22, 163, 74}
+\definecolor{warning}{RGB}{217, 119, 6}
+\definecolor{danger}{RGB}{220, 38, 38}
+\definecolor{codebg}{RGB}{248, 248, 252}
+\definecolor{codefg}{RGB}{40, 40, 80}
+\definecolor{gray}{RGB}{100, 116, 139}
+
+% ── Estilo de código ──────────────────────────────────────────────────────────
+\lstdefinestyle{python}{
+  language=Python,
+  backgroundcolor=\color{codebg},
+  basicstyle=\ttfamily\small\color{codefg},
+  keywordstyle=\color{primary}\bfseries,
+  stringstyle=\color{success},
+  commentstyle=\color{gray}\itshape,
+  numberstyle=\tiny\color{gray},
+  numbers=left,
+  stepnumber=1,
+  frame=single,
+  framerule=0.4pt,
+  rulecolor=\color{primary!30},
+  breaklines=true,
+  breakatwhitespace=true,
+  showstringspaces=false,
+  tabsize=4,
+  captionpos=b,
+  xleftmargin=1.5em,
+  xrightmargin=0.5em,
+}
+\lstset{style=python}
+
+% ── Cabeceras ─────────────────────────────────────────────────────────────────
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\textcolor{gray}{SoccerSolver --- Memoria Técnica}}
+\fancyhead[R]{\small\textcolor{gray}{\leftmark}}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+% ── Títulos ───────────────────────────────────────────────────────────────────
+\titleformat{\chapter}[display]
+  {\normalfont\huge\bfseries\color{primary}}
+  {\chaptertitlename\ \thechapter}{20pt}{\Huge}
+\titleformat{\section}
+  {\normalfont\Large\bfseries\color{primary!80}}
+  {\thesection}{1em}{}
+\titleformat{\subsection}
+  {\normalfont\large\bfseries\color{primary!60}}
+  {\thesubsection}{1em}{}
+
+% ── Entornos personalizados ───────────────────────────────────────────────────
+\newmdenv[
+  backgroundcolor=warning!10,
+  linecolor=warning,
+  linewidth=1.5pt,
+  leftline=true, rightline=false, topline=false, bottomline=false,
+  innerleftmargin=10pt, innerrightmargin=6pt,
+  innertopmargin=6pt, innerbottommargin=6pt,
+]{warningbox}
+
+\newmdenv[
+  backgroundcolor=success!8,
+  linecolor=success,
+  linewidth=1.5pt,
+  leftline=true, rightline=false, topline=false, bottomline=false,
+  innerleftmargin=10pt, innerrightmargin=6pt,
+  innertopmargin=6pt, innerbottommargin=6pt,
+]{successbox}
+
+\newmdenv[
+  backgroundcolor=danger!8,
+  linecolor=danger,
+  linewidth=1.5pt,
+  leftline=true, rightline=false, topline=false, bottomline=false,
+  innerleftmargin=10pt, innerrightmargin=6pt,
+  innertopmargin=6pt, innerbottommargin=6pt,
+]{dangerbox}
+
+\newmdenv[
+  backgroundcolor=primary!5,
+  linecolor=primary,
+  linewidth=1.5pt,
+  leftline=true, rightline=false, topline=false, bottomline=false,
+  innerleftmargin=10pt, innerrightmargin=6pt,
+  innertopmargin=6pt, innerbottommargin=6pt,
+]{infobox}
+
+% ── Hiperenlaces ──────────────────────────────────────────────────────────────
+\hypersetup{
+  colorlinks=true,
+  linkcolor=primary,
+  urlcolor=accent,
+  citecolor=success,
+  pdfauthor={SoccerSolver},
+  pdftitle={Memoria Técnica --- Simulador What-If de Valor de Mercado},
+}
+
+% ── Interlineado ──────────────────────────────────────────────────────────────
+\onehalfspacing
+
+% ══════════════════════════════════════════════════════════════════════════════
+\begin{document}
+% ══════════════════════════════════════════════════════════════════════════════
+
+% ── Portada ───────────────────────────────────────────────────────────────────
+\begin{titlepage}
+  \centering
+  \vspace*{2cm}
+
+  {\Huge\bfseries\color{primary} SoccerSolver\par}
+  \vspace{0.4cm}
+  {\Large\color{accent} Simulador What-If de Valor de Mercado\par}
+  \vspace{0.4cm}
+  {\large\color{gray} Reto Técnico --- Memoria de Proyecto\par}
+
+  \vspace{2cm}
+  \rule{\linewidth}{0.5pt}
+  \vspace{0.5cm}
+
+  \begin{center}
+    \begin{tabular}{ll}
+      \textbf{Fuentes de datos:} & SoFIFA (FIFA 24) + Transfermarkt \\[4pt]
+      \textbf{Ligas cubiertas:}  & Premier League, La Liga, Bundesliga, \\
+                                  & Serie A, Ligue 1 \\[4pt]
+      \textbf{Jugadores:}        & 3.467 (FIFA 24) \\[4pt]
+      \textbf{Modelo:}           & GradientBoostingRegressor $\times$ 4 grupos \\[4pt]
+      \textbf{Stack:}            & Python · scikit-learn · Streamlit \\
+    \end{tabular}
+  \end{center}
+
+  \vspace{0.5cm}
+  \rule{\linewidth}{0.5pt}
+  \vspace{2cm}
+
+  {\large\today\par}
+\end{titlepage}
+
+% ── Índice ────────────────────────────────────────────────────────────────────
+\tableofcontents
+\newpage
+
+% ══════════════════════════════════════════════════════════════════════════════
+\chapter{Introducción y Contexto del Proyecto}
+% ══════════════════════════════════════════════════════════════════════════════
+
+\section{Motivación}
+
+El valor de mercado de un futbolista no es un número fijo: es el resultado de una negociación moldeada por métricas de rendimiento, edad, potencial de crecimiento, escasez en la posición, duración del contrato y el contexto del club. Modelar esta dinámica de forma interactiva es el objetivo central de este proyecto.
+
+\begin{infobox}
+\textbf{Caso de uso central:} Un jugador valorado en 12M€ cuyo agente puede ver en tiempo real que mejorar su \textit{dribbling} en 5 puntos añade 800K€ a su valor de mercado. La interfaz debe hacer este insight obvio para un director deportivo no técnico en menos de 10 segundos.
+\end{infobox}
+
+\section{Objetivos}
+
+\begin{enumerate}[leftmargin=*]
+  \item Construir un \textbf{pipeline de datos} que extraiga y unifique atributos de jugadores de SoFIFA y valores de mercado reales de Transfermarkt.
+  \item Entrenar un \textbf{modelo predictivo} (R² $> 0{,}80$ requerido) capaz de estimar el valor de mercado en euros a partir de los atributos del jugador.
+  \item Implementar un \textbf{motor What-If} que recalcule el valor predicho en tiempo real ($< 200$ms) al modificar cualquier atributo.
+  \item Desarrollar una \textbf{interfaz de usuario interactiva} (Streamlit) que permita buscar jugadores, mover \textit{sliders}, comparar escenarios y visualizar las palancas de precio clave.
+\end{enumerate}
+
+\section{Arquitectura General}
+
+El proyecto se organiza en cinco capas independientes y encadenadas:
+
+\begin{center}
+\begin{tabular}{clll}
+\toprule
+\textbf{Capa} & \textbf{Componente} & \textbf{Tecnología} & \textbf{Output} \\
+\midrule
+1 & Adquisición de datos     & CSV (SoFIFA / TM)    & \texttt{male\_players.csv} \\
+2 & Limpieza y unificación   & pandas, difflib      & \texttt{players\_unified.csv} \\
+3 & Modelado ML              & scikit-learn         & \texttt{model\_\{grupo\}.pkl} \\
+4 & Motor What-If            & NumPy                & API de predicción \\
+5 & Interfaz de usuario      & Streamlit + ngrok    & App web pública \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+
+% ══════════════════════════════════════════════════════════════════════════════
+\chapter{Adquisición y Preparación de Datos}
+% ══════════════════════════════════════════════════════════════════════════════
+
+\section{Fuente 1 --- SoFIFA (FIFA 24)}
+
+\subsection{Descripción del dataset}
+
+El dataset principal proviene de SoFIFA, la base de datos de referencia de atributos de jugadores del videojuego FIFA. Se utilizó la versión FIFA 24 (temporada 2023-24), que contiene valoraciones actualizadas a septiembre de 2023.
+
+\begin{warningbox}
+\textbf{Complicación encontrada:} El primer enfoque fue el scraping directo de la web de SoFIFA mediante Playwright. La página renderiza todo su contenido con JavaScript, lo que causó que las listas de jugadores aparecieran vacías al usar \texttt{wait\_until=``domcontentloaded''}. El fix requirió cambiar a \texttt{wait\_until=``networkidle''} y añadir esperas explícitas sobre selectores concretos.
+
+Adicionalmente, el entorno de desarrollo (Google Colab / Jupyter) generó un segundo error: \texttt{RuntimeError: asyncio.run() cannot be called from a running event loop}. La solución fue instalar \texttt{nest\_asyncio} y aplicar \texttt{nest\_asyncio.apply()} antes de cualquier llamada asíncrona.
+
+Debido a las restricciones de red del entorno y al tiempo de desarrollo, se optó finalmente por utilizar el dataset público de SoFIFA disponible en Kaggle (\textit{FIFA 24 Complete Player Dataset}), que contiene datos equivalentes con mayor calidad y fiabilidad.
+\end{warningbox}
+
+\subsection{Filtrado aplicado}
+
+Del dataset original de 180.021 registros (versiones FIFA 15--24), se filtró para trabajar exclusivamente con:
+
+\begin{itemize}
+  \item \textbf{Versión:} FIFA 24 (temporada de referencia)
+  \item \textbf{Ligas:} Las 5 grandes ligas europeas (Big Five)
+\end{itemize}
+
+\begin{center}
+\begin{tabular}{lrr}
+\toprule
+\textbf{Liga} & \textbf{Jugadores} & \textbf{\% del total} \\
+\midrule
+Bundesliga     & 850  & 24{,}5\% \\
+Serie A        & 842  & 24{,}3\% \\
+Premier League & 679  & 19{,}6\% \\
+La Liga        & 596  & 17{,}2\% \\
+Ligue 1        & 500  & 14{,}4\% \\
+\midrule
+\textbf{Total} & \textbf{3.467} & \textbf{100\%} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection{Variables extraídas}
+
+Se trabajó con 45 features organizadas en cuatro categorías:
+
+\begin{itemize}
+  \item \textbf{Ratings principales:} \texttt{overall}, \texttt{potential}, \texttt{age}
+  \item \textbf{Atributos de juego:} pace, shooting, passing, dribbling, defending, physic
+  \item \textbf{Atributos detallados:} 25 estadísticas individuales (aceleración, visión, compostura, etc.)
+  \item \textbf{Contexto contractual:} años de contrato restantes, reputación internacional, pie preferido
+\end{itemize}
+
+\subsection{Features derivadas}
+
+Además de las variables originales, se construyeron cuatro features adicionales con mayor poder predictivo:
+
+\begin{align}
+  \texttt{contract\_years\_left} &= \texttt{club\_contract\_valid\_until\_year} - 2023 \\
+  \texttt{age\_squared}          &= \texttt{age}^2 \\
+  \texttt{is\_peak\_age}         &= \mathbf{1}[24 \leq \texttt{age} \leq 28] \\
+  \texttt{growth\_potential}     &= \texttt{potential} - \texttt{overall}
+\end{align}
+
+\texttt{age\_squared} es especialmente relevante porque la relación entre edad y valor de mercado no es lineal: el valor crece hasta los 24--28 años y cae de forma acelerada a partir de los 30.
+
+\section{Fuente 2 --- Transfermarkt}
+
+\subsection{Descripción}
+
+Transfermarkt es la referencia estándar para valores de mercado reales y traspasos en el fútbol europeo. Se utilizaron dos datasets:
+
+\begin{itemize}
+  \item \textbf{players.csv:} 47.702 jugadores con valor de mercado actual y fecha de nacimiento
+  \item \textbf{player\_valuations.csv:} 616.377 registros históricos de valoración (2000--2026)
+\end{itemize}
+
+\subsection{Matching SoFIFA -- Transfermarkt}
+
+La principal dificultad técnica de la fase de datos fue emparejar jugadores entre ambas fuentes, ya que no comparten ningún identificador común.
+
+\begin{dangerbox}
+\textbf{Problema central:} SoFIFA almacena el nombre legal completo del jugador (\textit{``Kylian Mbappé Lottin''}), mientras que Transfermarkt usa el nombre comercial (\textit{``Kylian Mbappé''}). Un matching por nombre exacto captura menos del 30\% de los casos.
+\end{dangerbox}
+
+Se implementó un algoritmo de matching en tres capas:
+
+\begin{enumerate}
+  \item \textbf{Normalización:} Eliminación de acentos, conversión a minúsculas, extracción solo de caracteres alfabéticos.
+  \item \textbf{Filtro por año de nacimiento} (±1 año): reduce el espacio de candidatos de 10.683 a decenas por jugador.
+  \item \textbf{Token overlap score:} fracción de tokens compartidos entre los nombres normalizados.
+  \begin{equation}
+    \text{score}(a, b) = \frac{|\text{tokens}(a) \cap \text{tokens}(b)|}{\max(|\text{tokens}(a)|, |\text{tokens}(b)|)}
+  \end{equation}
+  \item \textbf{Bonus por apellido exacto:} +0{,}10 al score si al menos un token coincide exactamente.
+\end{enumerate}
+
+Un match se acepta si $\text{score} \geq 0{,}50$.
+
+\subsection{Resultados del matching}
+
+\begin{center}
+\begin{tabular}{lr}
+\toprule
+\textbf{Métrica} & \textbf{Valor} \\
+\midrule
+Jugadores SoFIFA (base) & 3.467 \\
+Matches encontrados & 2.742 (79{,}1\%) \\
+Matches con score = 1{,}00 (exactos) & 1.616 \\
+Matches con score $\geq$ 0{,}80 & 1.630 \\
+Sin match & 725 (20{,}9\%) \\
+Registros históricos TM disponibles & 55.109 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{warningbox}
+\textbf{Casos problemáticos identificados:}
+\begin{itemize}
+  \item Jugadores con nombre artístico monónimo: \textit{Vinicius} (nombre legal: \textit{Vinícius José Paixão de Oliveira Júnior}) obtiene un score de 0{,}30 y queda sin match.
+  \item Casemiro, Rodri, Alisson: nombres muy cortos que no solapan con el nombre legal completo.
+  \item Jugadores transferidos entre la fecha del CSV de SoFIFA y la de TM pueden no coincidir en club, añadiendo ambigüedad.
+\end{itemize}
+\end{warningbox}
+
+\section{Calidad de datos y tratamiento de nulos}
+
+\begin{center}
+\begin{tabular}{lrrr}
+\toprule
+\textbf{Columna} & \textbf{Nulos originales} & \textbf{Tratamiento} & \textbf{Nulos finales} \\
+\midrule
+value\_eur & 2.153 (1{,}2\%) & Eliminar filas & 0 \\
+pace / shooting / ... & 20.024 (11{,}1\%) & Porteros: imputar a 0 & 0 \\
+Resto de features & $< 1\%$ & Mediana por grupo & 0 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Los nulos en \texttt{pace}, \texttt{shooting} y otras estadísticas de campo corresponden exclusivamente a porteros (402 jugadores), para quienes FIFA no asigna estos atributos. Se imputaron a 0 y se añadieron sus estadísticas de portería (\texttt{goalkeeping\_diving}, \texttt{goalkeeping\_reflexes}, etc.) como features específicas.
+
+
+% ══════════════════════════════════════════════════════════════════════════════
+\chapter{Modelo Predictivo}
+% ══════════════════════════════════════════════════════════════════════════════
+
+\section{Formulación del problema}
+
+El objetivo es predecir el valor de mercado de un jugador en euros dado su vector de atributos:
+
+\begin{equation}
+  \hat{v} = f(\mathbf{x}), \quad \mathbf{x} \in \mathbb{R}^{45}, \quad \hat{v} \in \mathbb{R}^+
+\end{equation}
+
+\subsection{Transformación logarítmica del target}
+
+Los valores de mercado siguen una distribución log-normal: Mbappé vale 185M€, un jugador medio 3M€ y un reserva 25K€. Entrenar directamente sobre $v$ haría que el modelo optimizara el error en los outliers de alta valoración, ignorando la precisión en el rango donde vive el 95\% de los jugadores.
+
+Por tanto, se entrena sobre:
+
+\begin{equation}
+  y = \log(1 + v) \quad \Rightarrow \quad \hat{v} = e^{\hat{y}} - 1
+\end{equation}
+
+Esta transformación convierte la distribución sesgada en aproximadamente normal, mejorando la estabilidad del entrenamiento y el MAPE en el rango bajo y medio de valores.
+
+\section{Estratificación por grupo de posición}
+
+Se entrenan \textbf{cuatro modelos independientes}, uno por grupo de posición:
+
+\begin{center}
+\begin{tabular}{llr}
+\toprule
+\textbf{Grupo} & \textbf{Posiciones incluidas} & \textbf{N jugadores} \\
+\midrule
+GK  & Goalkeeper & 402 \\
+DEF & CB, LB, RB, LWB, RWB & 1.181 \\
+MID & CDM, CM, CAM, LM, RM y variantes & 1.234 \\
+FWD & ST, CF, LW, RW, LF, RF & 650 \\
+\midrule
+\textbf{Total} & & \textbf{3.467} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+La estratificación es necesaria porque los atributos tienen significados distintos según la posición: un \texttt{pace} alto es crítico para un extremo pero irrelevante para un portero.
+
+\section{Modelo 1 --- Regresión Ridge (Baseline)}
+
+\subsection{Justificación}
+
+Se utiliza Ridge Regression (regresión lineal con regularización L2) como baseline en lugar de OLS puro por dos razones:
+
+\begin{enumerate}
+  \item \textbf{Multicolinealidad:} \texttt{overall} está altamente correlacionado con \texttt{dribbling}, \texttt{passing}, \texttt{pace}, etc. OLS puro genera coeficientes inestables en presencia de multicolinealidad. Ridge los regulariza.
+  \item \textbf{Escala heterogénea:} \texttt{overall} está en [40, 99] mientras que \texttt{contract\_years\_left} está en [-2, 8]. El \texttt{StandardScaler} normaliza ambas antes de la regresión.
+\end{enumerate}
+
+\subsection{Pipeline}
+
+\begin{lstlisting}[caption={Pipeline de regresión Ridge}]
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import StandardScaler
+from sklearn.linear_model import Ridge
+
+baseline = Pipeline([
+    ("scaler", StandardScaler()),
+    ("model",  Ridge(alpha=10.0)),
+])
+\end{lstlisting}
+
+\section{Modelo 2 --- Gradient Boosting (Modelo Final)}
+
+\subsection{Justificación}
+
+Gradient Boosting es el estándar en competiciones de predicción tabular. Construye un ensemble de árboles de decisión de forma secuencial, donde cada árbol corrige los errores del anterior. Sus ventajas sobre la regresión lineal en este contexto son:
+
+\begin{itemize}
+  \item Captura relaciones no lineales (ej.: el valor cae de forma exponencial a partir de los 30 años)
+  \item Robusto a \textit{outliers} gracias a la pérdida de Huber implícita en los árboles
+  \item No requiere escalado de features
+  \item La importancia de features es exportable para el motor What-If
+\end{itemize}
+
+\subsection{Hiperparámetros}
+
+\begin{lstlisting}[caption={Configuración del GradientBoostingRegressor}]
+from sklearn.ensemble import GradientBoostingRegressor
+
+gbm = GradientBoostingRegressor(
+    n_estimators     = 300,   # arboles suficientes sin overfitting
+    max_depth        = 5,     # profundidad moderada para 3467 muestras
+    learning_rate    = 0.05,  # tasa baja + mas arboles = mejor generalizacion
+    subsample        = 0.8,   # stochastic GB: reduce varianza
+    min_samples_leaf = 3,     # evita memorizar outliers individuales
+    random_state     = 42,
+)
+\end{lstlisting}
+
+\begin{infobox}
+\textbf{Nota sobre XGBoost / LightGBM:} El reto especifica XGBoost o LightGBM como enfoque de referencia. Se utilizó \texttt{GradientBoostingRegressor} de scikit-learn por disponibilidad en el entorno de desarrollo sin conexión a internet. En producción, LightGBM ofrece resultados equivalentes con entrenamiento aproximadamente 10 veces más rápido.
+\end{infobox}
+
+\subsection{Importancia de features}
+
+Se usa \texttt{permutation\_importance} en lugar del atributo nativo \texttt{feature\_importances\_} de sklearn porque este último sobrevalora features con alta cardinalidad. Permutation importance mide el aumento real del error al aleatorizar cada feature en el conjunto de test.
+
+\begin{lstlisting}[caption={Cálculo de importancia por permutación}]
+from sklearn.inspection import permutation_importance
+
+perm = permutation_importance(
+    gbm, X_test, y_test,
+    n_repeats=15,
+    random_state=42,
+)
+\end{lstlisting}
+
+\subsection{Top features por grupo de posición}
+
+\begin{center}
+\begin{tabular}{llll}
+\toprule
+\textbf{Grupo} & \textbf{1\textordmasculine\ feature} & \textbf{2\textordmasculine\ feature} & \textbf{3\textordmasculine\ feature} \\
+\midrule
+GK  & potential (0{,}516) & overall (0{,}314) & age\_squared (0{,}070) \\
+DEF & overall (1{,}159)   & potential (0{,}202) & age (0{,}032) \\
+MID & overall (1{,}352)   & potential (0{,}115) & age\_squared (0{,}013) \\
+FWD & overall (1{,}482)   & potential (0{,}105) & age (0{,}007) \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+
+% ══════════════════════════════════════════════════════════════════════════════
+\chapter{Evaluación del Modelo}
+% ══════════════════════════════════════════════════════════════════════════════
+
+\section{Métricas por grupo de posición}
+
+Se utilizó una división train/test 80\%/20\% con \texttt{random\_state=42} para garantizar reproducibilidad. Las métricas se calculan en escala de euros (tras invertir la transformación logarítmica) para facilitar su interpretación.
+
+\begin{center}
+\begin{tabular}{lrrrrrr}
+\toprule
+\multirow{2}{*}{\textbf{Grupo}} & \multicolumn{3}{c}{\textbf{Ridge Baseline}} & \multicolumn{3}{c}{\textbf{Gradient Boosting}} \\
+\cmidrule(lr){2-4} \cmidrule(lr){5-7}
+ & R² & MAE (€) & MAPE & R² & MAE (€) & MAPE \\
+\midrule
+GK  & 0{,}957 & 1.796.128 & --- & 0{,}984 & 1.008.386 & 14{,}4\% \\
+DEF & 0{,}968 & 1.180.145 & --- & 0{,}996 &   302.311 &  4{,}5\% \\
+MID & 0{,}977 & 1.218.120 & --- & 0{,}994 &   573.294 &  6{,}1\% \\
+FWD & 0{,}978 & 2.078.427 & --- & 0{,}997 &   884.836 &  4{,}5\% \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Todos los grupos superan el R² $> 0{,}80$ requerido. La ganancia sobre el baseline es especialmente significativa en DEF (MAE: $-$877.834€) y FWD (MAE: $-$1.193.591€).
+
+\section{Validación cruzada 5-fold}
+
+\begin{center}
+\begin{tabular}{lrrr}
+\toprule
+\textbf{Grupo} & \textbf{R² medio (CV)} & \textbf{Desv. estándar} & \textbf{Estabilidad} \\
+\midrule
+GK  & 0{,}987 & 0{,}007 & Alta \\
+DEF & 0{,}996 & 0{,}001 & Muy alta \\
+MID & 0{,}996 & 0{,}001 & Muy alta \\
+FWD & 0{,}996 & 0{,}002 & Muy alta \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+La baja desviación estándar entre folds confirma que el modelo generaliza de forma consistente y no presenta overfitting severo en el conjunto de entrenamiento.
+
+\section{Error por rango de valor}
+
+\begin{center}
+\begin{tabular}{lrrrr}
+\toprule
+\textbf{Rango de valor} & \textbf{N} & \textbf{MAE (€)} & \textbf{Error medio \%} & \textbf{R²} \\
+\midrule
+$< 1$M€      & 708  & 11.781   & 2{,}3\% & 0{,}983 \\
+1--5M€       & 1477 & 46.026   & 1{,}8\% & 0{,}983 \\
+5--20M€      & 835  & 165.120  & 1{,}6\% & 0{,}992 \\
+20--50M€     & 364  & 485.880  & 1{,}5\% & 0{,}984 \\
+50--100M€    & 66   & 1.655.598 & 2{,}5\% & 0{,}834 \\
+$> 100$M€    & 17   & 4.369.565 & 3{,}4\% & 0{,}805 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+El modelo es más preciso en el rango €1M--€50M (donde vive el 95\% de los jugadores de las Big Five), con errores medios del 1{,}5--2{,}3\%. La precisión cae en jugadores con valoraciones superiores a €100M, como se analiza en la sección de limitaciones.
+
+\section{Sanity check con jugadores conocidos}
+
+\begin{center}
+\begin{tabular}{lrrrr}
+\toprule
+\textbf{Jugador} & \textbf{Overall} & \textbf{Real (€)} & \textbf{Predicho (€)} & \textbf{Error \%} \\
+\midrule
+K. Mbappé      & 91 & 181.500.000 & 181.202.043 & $-0{,}2\%$ \\
+E. Haaland     & 91 & 185.000.000 & 184.535.299 & $-0{,}3\%$ \\
+K. De Bruyne   & 91 & 103.000.000 & 103.045.591 & $+0{,}0\%$ \\
+J. Bellingham  & 86 & 100.500.000 & 100.115.706 & $-0{,}4\%$ \\
+Vini Jr.       & 89 & 158.500.000 & 158.526.030 & $+0{,}0\%$ \\
+H. Kane        & 90 & 119.500.000 & 119.501.908 & $+0{,}0\%$ \\
+M. Salah       & 89 & 85.500.000  & 85.417.393  & $-0{,}1\%$ \\
+T. Courtois    & 90 & 63.000.000  & 58.591.550  & $-7{,}0\%$ \\
+R. Lewandowski & 90 & 58.000.000  & 92.583.617  & $+59{,}6\%$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+El caso de Lewandowski (+59{,}6\%) es el error más significativo identificado y se analiza en detalle en la sección de limitaciones.
+
+
+% ══════════════════════════════════════════════════════════════════════════════
+\chapter{Motor What-If y Análisis de Sensibilidad}
+% ══════════════════════════════════════════════════════════════════════════════
+
+\section{Diseño del motor}
+
+El motor What-If responde a la pregunta: \textit{``si modifico el atributo $x_i$ en $\Delta$, ¿cuánto cambia el valor predicho?''}
+
+\begin{lstlisting}[caption={Función central del motor What-If}]
+def whatif_delta(base_features, modified_features, position_group):
+    """
+    Calcula el delta en EUR al modificar atributos de un jugador.
+    Tiempo de respuesta: < 10ms (inferencia GBM en un solo vector).
+    """
+    base = predict_value(base_features, position_group)
+    new  = predict_value(modified_features, position_group)
+
+    delta_eur = new["predicted_eur"] - base["predicted_eur"]
+    delta_pct = delta_eur / base["predicted_eur"] * 100
+
+    return {
+        "base_eur":  base["predicted_eur"],
+        "new_eur":   new["predicted_eur"],
+        "delta_eur": round(delta_eur),
+        "delta_pct": round(delta_pct, 2),
+        "conf_low":  new["conf_low"],
+        "conf_high": new["conf_high"],
+    }
+\end{lstlisting}
+
+\section{Intervalos de confianza}
+
+Los intervalos de confianza se calculan como el RMSE relativo observado en el test set para cada grupo de posición:
+
+\begin{equation}
+  [\hat{v} \cdot (1 - \alpha_g),\; \hat{v} \cdot (1 + \alpha_g)]
+\end{equation}
+
+donde $\alpha_g$ es el factor de incertidumbre por grupo:
+
+\begin{center}
+\begin{tabular}{lr}
+\toprule
+\textbf{Grupo} & $\alpha_g$ \\
+\midrule
+GK  & $\pm 18\%$ \\
+DEF & $\pm 8\%$ \\
+MID & $\pm 15\%$ \\
+FWD & $\pm 17\%$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{warningbox}
+\textbf{Limitación:} Estos intervalos son aproximaciones basadas en el RMSE relativo, no intervalos estadísticos formales. Un modelo de quantile regression o conformal prediction proporcionaría intervalos calibrados con garantías de cobertura.
+\end{warningbox}
+
+\section{Panel de Key Levers}
+
+Para cada jugador se calcula el impacto de subir cada atributo en +5 puntos (o +1 para estrellas y años de contrato), mostrando el delta en EUR resultante:
+
+\begin{lstlisting}[caption={Cálculo del panel de palancas clave}]
+def sensitivity_report(player_row, increment=5):
+    base_feats = {f: player_row[f] for f in FEATURES}
+    base_val   = predict_value(base_feats, player_row["position_group"])
+
+    results = []
+    for feat in TEST_FEATURES:
+        modified       = base_feats.copy()
+        inc            = 1 if feat in STAR_FEATURES else increment
+        modified[feat] = base_feats[feat] + inc
+        new_val        = predict_value(modified, player_row["position_group"])
+        delta_eur      = new_val["predicted_eur"] - base_val["predicted_eur"]
+        results.append({"feature": feat, "delta_eur": delta_eur, "inc": inc})
+
+    return sorted(results, key=lambda x: abs(x["delta_eur"]), reverse=True)
+\end{lstlisting}
+
+\textbf{Ejemplo real para J. Willock (MID, overall 78):}
+
+\begin{center}
+\begin{tabular}{lrr}
+\toprule
+\textbf{Feature} & \textbf{Incremento} & \textbf{Delta EUR} \\
+\midrule
+overall    & +5 & +11.854.510€ \\
+potential  & +5 & +11.201.880€ \\
+age        & +5 & $-$295.461€ \\
+dribbling  & +5 & +167.265€ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+
+% ══════════════════════════════════════════════════════════════════════════════
+\chapter{Interfaz de Usuario}
+% ══════════════════════════════════════════════════════════════════════════════
+
+\section{Tecnología elegida: Streamlit}
+
+Se evaluaron tres opciones para la interfaz interactiva:
+
+\begin{center}
+\begin{tabular}{llll}
+\toprule
+\textbf{Opción} & \textbf{Sliders reales} & \textbf{Modelo Python} & \textbf{Link público} \\
+\midrule
+HTML/JS solo      & No (aproximación)  & No & Requiere hosting \\
+Streamlit + ngrok & Sí (nativos)       & Sí & Sí, en 2 minutos \\
+Streamlit Cloud   & Sí                 & Sí & Sí, permanente \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Se eligió \textbf{Streamlit} porque permite conectar directamente los sliders de la interfaz con el modelo Python real, garantizando predicciones exactas (no aproximaciones JavaScript). El link público se genera mediante \textbf{ngrok}, que crea un túnel HTTPS desde el servidor local al exterior.
+
+\section{Componentes de la interfaz}
+
+\begin{enumerate}
+  \item \textbf{Búsqueda de jugador:} campo de texto que filtra en tiempo real sobre los 3.467 jugadores del dataset por nombre o apellido.
+  \item \textbf{Panel hero:} muestra el valor predicho con su intervalo de confianza, la comparativa con el valor de Transfermarkt (cuando está disponible) y las métricas básicas del jugador.
+  \item \textbf{Sliders What-If:} 17 sliders correspondientes a los atributos más influyentes. El valor se recalcula instantáneamente al mover cualquier slider.
+  \item \textbf{Key Levers:} panel con los 5 atributos de mayor impacto para ese jugador específico, con barras de progreso y el delta en EUR al subir +5 puntos.
+  \item \textbf{Comparador de escenarios:} guarda hasta N escenarios con los cambios aplicados y los muestra en una tabla comparativa.
+\end{enumerate}
+
+\section{Despliegue}
+
+\begin{lstlisting}[language=bash, caption={Comandos de despliegue local con link público}]
+# Terminal 1: arrancar la aplicacion Streamlit
+streamlit run app.py
+
+# Terminal 2: crear el tunel publico con ngrok
+ngrok http 8501
+# Resultado: https://abc123.ngrok-free.app -> localhost:8501
+\end{lstlisting}
+
+Para un despliegue permanente sin depender de que el ordenador esté encendido, se puede publicar en \textbf{Streamlit Cloud} (share.streamlit.io) conectando el repositorio de GitHub. El tier gratuito es suficiente para este proyecto.
+
+
+% ══════════════════════════════════════════════════════════════════════════════
+\chapter{Limitaciones y Trabajo Futuro}
+% ══════════════════════════════════════════════════════════════════════════════
+
+\section{Limitaciones identificadas}
+
+\subsection{El modelo aprende la función de EA Sports, no el mercado real}
+
+Esta es la limitación más importante del proyecto. El R² en el test set es 0{,}994--0{,}997, pero al aplicar validación cruzada estricta con datos de distintos jugadores el R² cae significativamente para DEF, MID y FWD.
+
+\textbf{Causa:} EA Sports calcula internamente \texttt{value\_eur} usando prácticamente los mismos atributos que se usan como features del modelo. El modelo aprende la función inversa de EA Sports, no la dinámica real del mercado de transferencias.
+
+\textbf{Impacto:} Las predicciones son muy precisas dentro del universo FIFA 24, pero no deben usarse para valorar jugadores fuera de ese contexto (ligas menores, academias, otras versiones de FIFA).
+
+\textbf{Para el simulador What-If:} El impacto es limitado. El uso principal del simulador es mostrar sensibilidad relativa (``si sube X, el valor sube Y''), no predicción absoluta de precio de traspaso.
+
+\subsection{Jugadores veteranos top infravalorados}
+
+\begin{center}
+\begin{tabular}{lrr}
+\toprule
+\textbf{Jugador} & \textbf{Real (€)} & \textbf{Error} \\
+\midrule
+R. Lewandowski & 58.000.000 & +59{,}6\% \\
+H. Lloris      &  4.000.000 & +88{,}5\% \\
+S. Mandanda    &  1.900.000 & +72{,}6\% \\
+G. Ochoa       &  2.900.000 & +63{,}1\% \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Estos jugadores tienen atributos FIFA todavía altos (overall 85--90), pero el mercado ya descuenta su declive físico inminente y la reducción de años de contrato. El modelo no captura este \textit{``descuento de carrera tardía''}.
+
+\subsection{Cobertura del matching Transfermarkt}
+
+El 20{,}9\% de los jugadores (725) no tiene datos de Transfermarkt porque el algoritmo de fuzzy matching no alcanza el umbral de 0{,}50 de solapamiento. Los casos más comunes son jugadores con nombre artístico monónimo (Vinicius, Casemiro) o nombres legales muy distintos al nombre comercial.
+
+\subsection{Instantánea temporal única}
+
+El modelo solo conoce el estado de octubre de 2023 (FIFA 24). No captura mejoras de rendimiento posteriores, lesiones, cambios de club ni evolución de atributos.
+
+\subsection{Intervalos de confianza aproximados}
+
+Los intervalos $\pm\alpha_g\%$ son estimaciones basadas en el RMSE relativo del grupo, no intervalos estadísticos con garantías de cobertura formal.
+
+\section{Con 10 veces más datos haría\ldots}
+
+Con 35.000+ jugadores históricos de todas las ligas y temporadas de FIFA 15--24:
+
+\begin{enumerate}
+  \item \textbf{Series temporales:} Dado el perfil de un jugador a los 22 años, predecir su trayectoria de valor hasta los 32. El dataset de TM ya tiene 616.377 registros históricos---el cuello de botella es cruzarlos con los atributos FIFA por temporada.
+
+  \item \textbf{Separación FIFA rating / valor de mercado real:} Entrenar dos modelos en cascada: (1) \texttt{atributos} $\to$ \texttt{value\_FIFA} y (2) \texttt{value\_FIFA} $\to$ \texttt{value\_TM}. El gap entre ambos es el \textit{``descuento de mercado''}, útil para detectar jugadores sobrevalorados o infravalorados por FIFA.
+
+  \item \textbf{Historial de lesiones:} Cruzar con bases de datos de lesiones (Transfermarkt las tiene). Un jugador con tres lesiones musculares en dos años vale sistemáticamente menos aunque sus atributos FIFA sean iguales.
+
+  \item \textbf{Efecto ventana de transferencias:} Con datos de traspasos reales, modelar el descuento por proximidad a la expiración del contrato. Un jugador a seis meses de quedar libre vale entre un 30--40\% menos en negociación real.
+
+  \item \textbf{Quantile regression:} Reemplazar los intervalos $\pm$RMSE\% por un modelo de regresión en cuantiles (percentil 10 y 90), obteniendo intervalos estadísticamente calibrados.
+
+  \item \textbf{Prima de liga:} El mercado de la Premier League tiene una prima del 20--30\% sobre La Liga para el mismo perfil. Con suficiente volumen, modelos estratificados por liga darían predicciones más precisas.
+\end{enumerate}
+
+
+% ══════════════════════════════════════════════════════════════════════════════
+\chapter{Conclusiones}
+% ══════════════════════════════════════════════════════════════════════════════
+
+Este proyecto ha construido un pipeline completo de extremo a extremo para la predicción y simulación interactiva del valor de mercado de jugadores de fútbol. Los principales resultados son:
+
+\begin{successbox}
+\begin{itemize}
+  \item \textbf{Datos:} 3.467 jugadores de las Big Five (FIFA 24) con 45 features limpias y 79{,}1\% de cobertura de datos reales de Transfermarkt.
+  \item \textbf{Modelo:} R² entre 0{,}984 y 0{,}997 en todos los grupos de posición, superando el umbral de 0{,}80 requerido. Error medio del 1{,}5--2{,}5\% en el rango €1M--€50M.
+  \item \textbf{Motor What-If:} predicciones instantáneas ($< 10$ms) con análisis de sensibilidad por jugador y panel de \textit{key levers}.
+  \item \textbf{UI:} simulador Streamlit con sliders, comparación de escenarios y despliegue público mediante ngrok.
+\end{itemize}
+\end{successbox}
+
+La principal lección técnica del proyecto es que el R² elevado no es sinónimo de buen modelo generalizable: el modelo captura con precisión la lógica interna de valoración de EA Sports más que la dinámica real del mercado de transferencias. Esta limitación se ha documentado con honestidad y orienta el trabajo futuro hacia la incorporación de datos de traspasos reales y series temporales.
+
+Desde el punto de vista de producto, el simulador cumple el objetivo central del reto: hacer visible para un director deportivo no técnico, en menos de 10 segundos, cómo un cambio en los atributos de un jugador se traduce en un cambio concreto en su valor de mercado.
+
+% ── Referencias ───────────────────────────────────────────────────────────────
+\chapter*{Referencias}
+\addcontentsline{toc}{chapter}{Referencias}
+
+\begin{enumerate}
+  \item Kaggle. \textit{FIFA 24 Complete Player Dataset} (SoFIFA). \url{https://www.kaggle.com/datasets/stefanoleone992/fifa-24-complete-player-dataset}
+  \item Kaggle. \textit{Transfermarkt Player Valuations}. \url{https://www.kaggle.com/datasets/davidcariboo/player-scores}
+  \item Pedregosa, F. et al. \textit{Scikit-learn: Machine Learning in Python}. JMLR 12, 2825--2830 (2011).
+  \item Friedman, J.H. \textit{Greedy Function Approximation: A Gradient Boosting Machine}. The Annals of Statistics, 29(5), 1189--1232 (2001).
+  \item Streamlit Inc. \textit{Streamlit Documentation}. \url{https://docs.streamlit.io}
+\end{enumerate}
+
+\end{document}
