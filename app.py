@@ -18,7 +18,7 @@ DATA_DIR   = BASE_DIR / "data"
 MODELS_DIR = BASE_DIR / "models"
 
 st.set_page_config(
-    page_title="SoccerSolver — Simulador What-If",
+    page_title="SoccerSolver — What-If Miguel Becerra",
     page_icon="⚽",
     layout="wide",
 )
@@ -149,7 +149,7 @@ left, right = st.columns([1, 1])
 # sliders nuevos inicializados con los valores del jugador actual.
 modified_feats = base_feats.copy()
 with left:
-    st.subheader("⚡ Simulador — mueve los sliders")
+    st.subheader("⚡ Estadísticas:")
     for feat, (label, vmin, vmax) in SLIDER_CONFIG.items():
         if feat not in base_feats:
             continue
@@ -175,7 +175,6 @@ has_change = any(
 with right:
     st.subheader("Valor de mercado predicho")
     st.metric(
-        label="Valor predicho",
         value=fmt(new_pred["eur"]),
         delta=(
             f"{'+' if delta_eur >= 0 else ''}"
