@@ -1,7 +1,5 @@
 # SoccerSolver — Simulador What-If de Valor de Mercado
 
-> Herramienta interactiva para ojeadores, directores deportivos y agentes que permite explorar cómo cambia el precio de un jugador al variar sus atributos en tiempo real.
-
 ---
 
 ## Índice
@@ -14,7 +12,7 @@
 6. [Motor What-If](#motor-what-if)
 7. [Interfaz de usuario](#interfaz-de-usuario)
 8. [Limitaciones conocidas](#limitaciones-conocidas)
-9. [Con 10x más datos haría...](#con-10x-más-datos-haría)
+9. [Acciones de mejora](#acciones-de-mejora)
 
 ---
 
@@ -284,7 +282,7 @@ Los intervalos ±8–18% son estimaciones basadas en el RMSE relativo del grupo,
 
 ---
 
-## Con 10x más datos haría...
+## Acciones de mejora
 
 ### Datos adicionales (10x)
 Con 35.000+ jugadores históricos de todas las ligas y temporadas de FIFA 15–24 tendríamos suficiente masa para:
